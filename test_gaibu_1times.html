@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>心音メトロノーム ver. 1.0 心音等倍版</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2em; }
+    input { width: 60px; font-size: 1em; }
+    button { margin: 1em; font-size: 1em; padding: 0.5em 1em; }
+  </style>
+</head>
+<body>
+  <h1>🎵 心音メトロノーム</h1>
+  <label>BPM: <input type="number" id="bpm" value="80" min="50" max="100"></label><br>
+  <!-- <label>拍子: <input type="number" id="beats" value="2" min="1" max="12"></label><br> -->
+  <button id="start">Start</button>
+  <button id="stop">Stop</button>
+
+  <script>
+    const clickSound = new Audio("save_cut_denoise_1times_han.wav");     // 通常拍音
+    const accentSound = new Audio("save_cut_denoise_1times_han.wav");   // 強拍音
+
+    let intervalId = null;
+    let count = 0;
+
+    document.getElementById("start").addEventListener("click", () => {
+      const bpm = parseInt(document.getElementById("bpm").value);
+      //const beats = parseInt(document.getElementById("beats").value);
+	const beats = 2;
+      const interval = 60000 / bpm;
+
+      count = 0; // カウント初期化
+
+      playClick(count, beats);
+      count++;
+
+      intervalId = setInterval(() => {
+        playClick(count, beats);
+        count++;
+      }, interval);
+    });
+
+    document.getElementById("stop").addEventListener("click", () => {
+      clearInterval(intervalId);
+    });
+
+    function playClick(count, beatsPerMeasure) {
+      if (count % beatsPerMeasure === 0) {
+        accentSound.currentTime = 0;
+        accentSound.play();
+      } else {
+        clickSound.currentTime = 0;
+        clickSound.play();      }
+    }
+  </script>
+</body>
+</html>
